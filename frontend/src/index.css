@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --text-primary: #ececec;
+  --text-secondary: #b1b1b1;
+  --bg-primary: #0a0a23;
+  --bg-secondary: #1a1b35;
+  --bg-accent: #2e3856;
+  --green: #3cba54;
+  --blue: #4184f3;
+  --orange: #f59f00;
+  --red: #db3a34;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.code-editor-container {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--bg-accent);
+}
+
+.monaco-editor {
+  padding-top: 0.5rem;
+}
+
+.result-container {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--bg-accent);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.btn {
+  @apply font-semibold px-4 py-2 rounded transition-colors;
+}
+
+.btn-primary {
+  @apply bg-hr-blue text-white hover:opacity-90;
+}
+
+.btn-success {
+  @apply bg-hr-green text-white hover:opacity-90;
+}
+
+.btn-danger {
+  @apply bg-hr-red text-white hover:opacity-90;
+}
+
+.btn-secondary {
+  @apply bg-hr-dark-accent text-white hover:opacity-90;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #445070;
+}
