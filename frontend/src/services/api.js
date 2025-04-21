@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001',
+  baseURL: 'http://localhost:5000',  // Explicitly set the correct backend URL
   headers: {
     'Content-Type': 'application/json'
   }
@@ -28,6 +28,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    console.error('API Error:', error);
     // Handle unauthorized errors (401) by logging out
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');

@@ -12,6 +12,21 @@ export default defineConfig({
       define: {
         'process.env.npm_package_version': '"0.25.1"'
       }
+    },
+    include: [
+      'react-monaco-editor',
+      'monaco-editor/esm/vs/editor/editor.api'
+    ]
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  },
+  resolve: {
+    // Help with react-monaco-editor compatibility
+    alias: {
+      'react-dom': 'react-dom'
     }
   }
 })

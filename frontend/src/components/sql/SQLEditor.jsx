@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import MonacoEditor from 'react-monaco-editor';
+import MonacoEditorWrapper from './MonacoEditorWrapper';
 
 function SQLEditor({ initialCode, onCodeChange, onExecute }) {
   const [code, setCode] = useState(initialCode || '-- Write your SQL query here');
@@ -29,7 +29,7 @@ function SQLEditor({ initialCode, onCodeChange, onExecute }) {
   };
   
   // Handle editor mounting
-  const handleEditorDidMount = (editor) => {
+  const handleEditorDidMount = (editor, monaco) => {
     setEditor(editor);
     editor.focus();
   };
@@ -64,7 +64,7 @@ function SQLEditor({ initialCode, onCodeChange, onExecute }) {
         className="code-editor-container"
         onKeyDown={handleEditorKeyDown}
       >
-        <MonacoEditor
+        <MonacoEditorWrapper
           width="100%"
           height="250px"
           language="sql"

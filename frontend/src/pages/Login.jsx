@@ -1,14 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('User is already authenticated, redirecting to dashboard');
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,17 +30,40 @@ function Login() {
     setIsLoading(true);
     
     try {
+      console.log('Attempting login with email:', email);
+      
+      // Try login via the context
       const result = await login(email, password);
       
       if (result.success) {
+        console.log('Login successful, navigating to dashboard');
         toast.success('Login successful!');
-        navigate('/dashboard');
+        
+        // Force a delay to ensure the auth state is updated
+        setTimeout(() => {
+          navigate('/dashboard', { replace: true });
+        }, 100);
       } else {
+        console.error('Login failed:', result.message);
         toast.error(result.message || 'Invalid credentials');
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('An error occurred during login');
+      
+      // Show more detailed error info
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+          toast.error(error.response.data.message || 'Login failed');
+        } else if (error.request) {
+          console.error('Error request:', error.request);
+          toast.error('No response from server. Please check your connection.');
+        } else {
+          toast.error(`Error: ${error.message}`);
+        }
+      } else {
+        toast.error('An unexpected error occurred during login');
+      }
     } finally {
       setIsLoading(false);
     }

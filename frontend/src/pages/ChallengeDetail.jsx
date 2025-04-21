@@ -4,8 +4,10 @@ import { challengesAPI, submissionsAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import SQLEditor from '../components/sql/SQLEditor';
 import ResultsDisplay from '../components/sql/ResultsDisplay';
+import AIFeedback from '../components/sql/AIFeedback';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import ErrorBoundary from '../components/common/ErrorBoundary';
 
 function ChallengeDetail() {
   const { id } = useParams();
@@ -192,11 +194,13 @@ function ChallengeDetail() {
         <div className="bg-hr-dark-secondary rounded-lg p-6 shadow-md">
           <h2 className="text-lg font-bold mb-4">SQL Editor</h2>
           
-          <SQLEditor
-            initialCode={code}
-            onCodeChange={handleCodeChange}
-            onExecute={handleExecute}
-          />
+          <ErrorBoundary>
+            <SQLEditor
+              initialCode={code}
+              onCodeChange={handleCodeChange}
+              onExecute={handleExecute}
+            />
+          </ErrorBoundary>
         </div>
         
         {(isExecuting || executionResult) && (
@@ -218,6 +222,17 @@ function ChallengeDetail() {
               />
             )}
           </div>
+        )}
+        
+        {!isExecuting && executionResult && !executionResult.isCorrect && (
+          <ErrorBoundary>
+            <AIFeedback 
+              query={code}
+              expectedOutput={executionResult?.expectedOutput}
+              actualOutput={executionResult?.result}
+              error={executionResult?.error}
+            />
+          </ErrorBoundary>
         )}
       </div>
     </div>

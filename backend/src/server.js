@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import challengeRoutes from './routes/challenges.js';
 import submissionRoutes from './routes/submissions.js';
+import openaiRoutes from './routes/openai.js';
 
 // Import sample data initializer
 import { initializeSampleChallenges } from './config/sampleChallenges.js';
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/challenges', challengeRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/openai', openaiRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
