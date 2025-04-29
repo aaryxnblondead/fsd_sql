@@ -36,7 +36,14 @@ function Dashboard() {
         
         // Fetch recent submissions
         const submissionsResponse = await submissionsAPI.getUserSubmissions(1, 5);
-        setRecentSubmissions(submissionsResponse.data.submissions);
+        console.log('Recent submissions data:', submissionsResponse); // Log the response
+        
+        if (submissionsResponse && submissionsResponse.data && submissionsResponse.data.submissions) {
+          setRecentSubmissions(submissionsResponse.data.submissions);
+        } else {
+          console.error('Unexpected submissions response format:', submissionsResponse);
+          setRecentSubmissions([]);
+        }
         
         // Fetch recommendations (challenges not completed)
         const allChallengesResponse = await challengesAPI.getAllChallenges(1, 10);
@@ -225,18 +232,29 @@ function Dashboard() {
                   {recentSubmissions.map(submission => (
                     <tr key={submission._id}>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">{submission.challenge.title}</div>
-                        <div className="text-xs text-gray-400">{submission.challenge.category}</div>
+                        <div className="text-sm font-medium text-white">
+                          {submission.challenge?.title || 'Unknown Challenge'}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {submission.challenge?.category || 'No category'}
+                        </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`px-2 py-1 rounded-full text-xs ${
-                          submission.isCorrect ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'
+                          submission.isCorrect ? 'bg-green-900 text-green-400' : 
+                          (submission.status === 'failed' || submission.result?.success === false)
+                            ? 'bg-red-900 text-red-400' 
+                            : 'bg-yellow-900 text-yellow-400'
                         }`}>
-                          {submission.isCorrect ? 'Correct' : 'Incorrect'}
+                          {submission.isCorrect ? 'Correct' : 
+                           (submission.status === 'failed' || submission.result?.success === false)
+                              ? 'Incorrect' : submission.status || 'Pending'}
                         </span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
-                        {new Date(submission.createdAt).toLocaleDateString()}
+                        {submission.createdAt 
+                          ? new Date(submission.createdAt).toLocaleDateString() 
+                          : 'Unknown date'}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                         <Link 
@@ -252,7 +270,7 @@ function Dashboard() {
               </table>
             </div>
           ) : (
-            <p className="text-gray-400">No submissions yet. Start solving challenges!</p>
+            <p className="text-gray-400">No submissions yet. Try solving some challenges!</p>
           )}
           
           <div className="mt-4">

@@ -28,13 +28,15 @@ export const submitSolution = async (req, res) => {
     const submissionData = {
       user: req.user.id,
       challenge: challengeId,
-      code,
+      query: code,
       result: {
         success: !queryResult.error,
-        output: queryResult.error ? null : JSON.stringify(queryResult.results),
-        executionTime,
+        message: queryResult.error ? 'Execution failed' : 'Query executed successfully',
+        data: queryResult.error ? null : queryResult.results,
         error: queryResult.error
-      }
+      },
+      executionTime: executionTime,
+      status: queryResult.error ? 'failed' : 'completed'
     };
     
     // Check submission against test cases if query execution was successful

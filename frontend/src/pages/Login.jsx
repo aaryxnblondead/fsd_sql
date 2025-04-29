@@ -32,8 +32,8 @@ function Login() {
     try {
       console.log('Attempting login with email:', email);
       
-      // Try login via the context
-      const result = await login(email, password);
+      // Try login via the context with explicit role=user
+      const result = await login({ email, password, role: 'user' });
       
       if (result.success) {
         console.log('Login successful, navigating to dashboard');
@@ -118,6 +118,12 @@ function Login() {
           Don't have an account?{' '}
           <Link to="/register" className="text-hr-blue hover:underline">
             Sign up
+          </Link>
+        </p>
+        <p className="mt-2">
+          Teacher login?{' '}
+          <Link to="/teacher/login" className="text-hr-blue hover:underline">
+            Click here
           </Link>
         </p>
       </div>

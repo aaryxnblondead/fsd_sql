@@ -76,11 +76,21 @@ export function AuthProvider({ children }) {
   }, [token, verifyTokenAndFetchUser]);
 
   // Login function
-  const login = async (email, password) => {
+  const login = async (credentials) => {
     try {
-      console.log('Login attempt with email:', email);
+      // Handle different formats of login credentials
+      let loginData;
+      if (typeof credentials === 'object' && credentials !== null) {
+        loginData = credentials;
+        console.log('Login attempt with:', credentials);
+      } else {
+        // Legacy support for email, password format
+        const [email, password] = arguments;
+        loginData = { email, password };
+        console.log('Login attempt with email:', email);
+      }
       
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login(loginData);
       console.log('Login successful, response:', response.data);
       
       const { token: newToken, user } = response.data;
@@ -106,7 +116,12 @@ export function AuthProvider({ children }) {
       
       console.log('Authentication state updated, user is now authenticated');
       
-      return { success: true };
+      return { 
+        success: true,
+        user: {
+          role: user.role
+        }
+      };
     } catch (error) {
       console.error('Login error:', error);
       
@@ -135,11 +150,24 @@ export function AuthProvider({ children }) {
   };
 
   // Register function
-  const register = async (username, email, password) => {
+  const register = async (username, email, password, role = 'user', specialization = '') => {
     try {
-      console.log('Attempting registration with:', { username, email });
+      console.log('Attempting registration with:', { username, email, role });
       
-      const response = await authAPI.register(username, email, password);
+      // Create registration data object
+      const registrationData = { 
+        username, 
+        email, 
+        password, 
+        role 
+      };
+      
+      // Add specialization for teacher accounts
+      if (role === 'teacher' && specialization) {
+        registrationData.specialization = specialization;
+      }
+      
+      const response = await authAPI.register(registrationData);
       console.log('Registration response:', response.data);
       
       const { token: newToken, user } = response.data;

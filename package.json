@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "install:backend": "cd backend && npm install",
-    "install:frontend": "cd frontend && npm install",
+    "install:frontend": "cd frontend && npm install --legacy-peer-deps",
     "postinstall": "npm run install:backend && npm run install:frontend",
     "start:backend": "cd backend && npm run dev",
     "start:frontend": "cd frontend && npm run dev",

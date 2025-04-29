@@ -66,7 +66,7 @@ export const register = async (req, res) => {
 
 // Login user
 export const login = async (req, res) => {
-  console.log('Login request received:', { email: req.body.email });
+  console.log('Login request received:', { email: req.body.email, role: req.body.role });
   
   // Check for validation errors
   const errors = validationResult(req);
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
     // Find user by email
@@ -92,7 +92,13 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    console.log('Login successful for user:', user.username);
+    // If role is specified, verify that the user has the correct role
+    if (role && user.role !== role) {
+      console.log(`User ${user.username} attempted to login as ${role} but has role ${user.role}`);
+      return res.status(400).json({ message: `You do not have ${role} access privileges` });
+    }
+
+    console.log('Login successful for user:', user.username, 'with role:', user.role);
 
     // Generate JWT token
     const token = jwt.sign(

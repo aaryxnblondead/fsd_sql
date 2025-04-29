@@ -8,6 +8,8 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('user'); // Default role is user
+  const [specialization, setSpecialization] = useState(''); // For teacher role
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { register } = useAuth();
@@ -34,17 +36,23 @@ function Register() {
       toast.error('Password must be at least 6 characters long');
       return;
     }
+
+    // Teacher validation
+    if (role === 'teacher' && !specialization) {
+      toast.error('Please specify your specialization');
+      return;
+    }
     
     setIsLoading(true);
     
     try {
-      console.log('Submitting registration form', { username, email });
-      const result = await register(username, email, password);
+      console.log('Submitting registration form', { username, email, role });
+      const result = await register(username, email, password, role, specialization);
       
       console.log('Registration result:', result);
       
       if (result.success) {
-        toast.success('Registration successful!');
+        toast.success(`Registration successful as ${role === 'teacher' ? 'teacher' : 'student'}!`);
         
         // Small delay to ensure state updates before navigation
         setTimeout(() => {
@@ -103,6 +111,59 @@ function Register() {
             required
           />
         </div>
+        
+        <div>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-1">
+            Account Type
+          </label>
+          <div className="flex space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="role"
+                value="user"
+                checked={role === 'user'}
+                onChange={() => setRole('user')}
+                className="form-radio h-4 w-4 text-hr-blue"
+              />
+              <span className="ml-2 text-white">Student</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                name="role"
+                value="teacher"
+                checked={role === 'teacher'}
+                onChange={() => setRole('teacher')}
+                className="form-radio h-4 w-4 text-hr-blue"
+              />
+              <span className="ml-2 text-white">Teacher</span>
+            </label>
+          </div>
+        </div>
+        
+        {role === 'teacher' && (
+          <div>
+            <label htmlFor="specialization" className="block text-sm font-medium text-gray-300 mb-1">
+              Specialization
+            </label>
+            <select
+              id="specialization"
+              value={specialization}
+              onChange={(e) => setSpecialization(e.target.value)}
+              className="w-full px-3 py-2 bg-hr-dark border border-hr-dark-accent rounded-md text-white focus:outline-none focus:ring-2 focus:ring-hr-blue"
+              required={role === 'teacher'}
+            >
+              <option value="">Select your specialization</option>
+              <option value="sql-basics">SQL Basics</option>
+              <option value="database-design">Database Design</option>
+              <option value="advanced-queries">Advanced Queries</option>
+              <option value="performance">Database Performance</option>
+              <option value="data-analysis">Data Analysis</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        )}
         
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">

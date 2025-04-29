@@ -1,5 +1,6 @@
 import express from 'express';
-import { authenticateUser, authorizeAdmin } from '../middleware/auth.js';
+import { authenticateUser, authorizeAdmin, authorizeRole } from '../middleware/auth.js';
+import User from '../models/User.js';
 
 const router = express.Router();
 
@@ -41,6 +42,34 @@ router.get('/', [authenticateUser, authorizeAdmin], (req, res) => {
 // @access  Private/Admin
 router.get('/:id', [authenticateUser, authorizeAdmin], (req, res) => {
   res.json({ message: 'User details - To be implemented' });
+});
+
+// Add this route to get students for a teacher
+router.get('/students', [authenticateUser, authorizeRole('teacher')], async (req, res) => {
+  try {
+    // Get the current teacher's ID
+    const teacherId = req.user.id;
+    
+    // Find all students associated with this teacher
+    const students = await User.find(
+      // Filter criteria - either directly associated with teacher
+      // or no teacher association yet (for demo)
+      { $or: [{ teachers: teacherId }, { role: 'user' }] },
+      // Exclude password field
+      { password: 0 }
+    );
+    
+    res.json({ 
+      success: true, 
+      students 
+    });
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error while fetching students' 
+    });
+  }
 });
 
 export default router; 

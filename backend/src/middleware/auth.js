@@ -54,4 +54,27 @@ export const authorizeAdmin = (req, res, next) => {
     console.log('Admin authorization denied for user:', req.user?.username);
     res.status(403).json({ message: 'Access denied. Admin privileges required.' });
   }
+};
+
+/**
+ * Middleware to authorize users with specific roles
+ * @param {string|Array} roles - Role or array of roles allowed to access the route
+ */
+export const authorizeRole = (roles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized - No user authenticated' });
+    }
+    
+    // Convert single role to array for consistent handling
+    const allowedRoles = Array.isArray(roles) ? roles : [roles];
+    
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: `Access denied - Role '${req.user.role}' not authorized for this action` 
+      });
+    }
+    
+    next();
+  };
 }; 

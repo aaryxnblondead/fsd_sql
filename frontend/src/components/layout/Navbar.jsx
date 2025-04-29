@@ -30,6 +30,7 @@ function Navbar() {
           {/* Desktop navigation menu */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">Home</Link>
+            <Link to="/discussions" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">Discussions</Link>
             
             {isAuthenticated ? (
               <>
@@ -43,7 +44,10 @@ function Navbar() {
                       onClick={toggleMenu}
                     >
                       <span className="sr-only">Open user menu</span>
-                      <span className="px-3 py-2 rounded-md">{currentUser?.username || 'User'}</span>
+                      <span className="px-3 py-2 rounded-md">
+                        {currentUser?.role === 'teacher' && <span className="text-hr-blue mr-1">👨‍🏫</span>}
+                        {currentUser?.username || 'User'}
+                      </span>
                     </button>
                   </div>
                   
@@ -62,7 +66,11 @@ function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">Login</Link>
+                <div className="flex items-center space-x-2">
+                  <Link to="/login" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">Student Login</Link>
+                  <span className="text-gray-500">|</span>
+                  <Link to="/teacher/login" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">Teacher Login</Link>
+                </div>
                 <Link to="/register" className="bg-hr-blue text-white px-3 py-2 rounded-md">Register</Link>
               </>
             )}
@@ -90,6 +98,7 @@ function Navbar() {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link to="/" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Home</Link>
+              <Link to="/discussions" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Discussions</Link>
               
               {isAuthenticated ? (
                 <>
@@ -104,8 +113,9 @@ function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Login</Link>
-                  <Link to="/register" className="bg-hr-blue text-white block px-3 py-2 rounded-md">Register</Link>
+                  <Link to="/login" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Student Login</Link>
+                  <Link to="/teacher/login" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Teacher Login</Link>
+                  <Link to="/register" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md">Register</Link>
                 </>
               )}
             </div>

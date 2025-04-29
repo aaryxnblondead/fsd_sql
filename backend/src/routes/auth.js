@@ -25,7 +25,8 @@ router.post(
   '/login',
   [
     body('email', 'Please include a valid email').isEmail().normalizeEmail(),
-    body('password', 'Password is required').exists()
+    body('password', 'Password is required').exists(),
+    body('role').optional().isIn(['user', 'teacher', 'admin'])
   ],
   login
 );

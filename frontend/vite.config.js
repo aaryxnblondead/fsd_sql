@@ -4,6 +4,21 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // Configure server for SPA routing
+    host: true,
+    port: 5173,
+    strictPort: true,
+    historyApiFallback: true,
+    // Handle client-side routing by returning index.html for all routes
+    // this will ensure we don't get 404s when refreshing on client-side routes
+    proxy: {},
+  },
+  preview: {
+    port: 5173,
+    strictPort: true,
+    historyApiFallback: true,
+  },
   optimizeDeps: {
     esbuildOptions: {
       // Force esbuild to use the specific version

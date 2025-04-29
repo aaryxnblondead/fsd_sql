@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const submissionSchema = new mongoose.Schema({
+const SubmissionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -11,7 +11,7 @@ const submissionSchema = new mongoose.Schema({
     ref: 'Challenge',
     required: true
   },
-  code: {
+  query: {
     type: String,
     required: true
   },
@@ -20,31 +20,51 @@ const submissionSchema = new mongoose.Schema({
       type: Boolean,
       required: true
     },
-    output: String, // JSON string of the query result
-    expectedOutput: String, // JSON string of expected output
-    executionTime: Number, // in ms
+    message: String,
+    data: mongoose.Schema.Types.Mixed,
     error: String
   },
+  executionTime: {
+    type: Number,
+    default: 0
+  },
+  score: {
+    type: Number,
+    default: 0
+  },
   feedback: {
-    aiGeneratedFeedback: String,
-    feedbackGenerationTime: Number // in ms
+    type: String,
+    default: ''
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'completed', 'failed'],
+    default: 'pending'
+  },
+  aiAnalysis: {
+    type: String,
+    default: ''
   },
   isCorrect: {
     type: Boolean,
     default: false
-  },
-  attempts: {
-    type: Number,
-    default: 1
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
 }, {
   timestamps: true
 });
 
-const Submission = mongoose.model('Submission', submissionSchema);
+// Create index to quickly find submissions by user and challenge
+SubmissionSchema.index({ user: 1, challenge: 1 });
+
+// Add a static method to find the best submission for a challenge by a user
+SubmissionSchema.statics.findBestSubmission = async function(userId, challengeId) {
+  return this.findOne({
+    user: userId,
+    challenge: challengeId,
+    isCorrect: true
+  }).sort({ score: -1, executionTime: 1 }).exec();
+};
+
+const Submission = mongoose.model('Submission', SubmissionSchema);
 
 export default Submission; 

@@ -1,12 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 :root {
-  --text-primary: #ececec;
-  --text-secondary: #b1b1b1;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
   --bg-primary: #0a0a23;
   --bg-secondary: #1a1b35;
   --bg-accent: #2e3856;
@@ -14,6 +14,19 @@
   --blue: #4184f3;
   --orange: #f59f00;
   --red: #db3a34;
+  --primary-color: #4a6cf7;
+  --primary-color-dark: #3a5cd7;
+  --secondary-color: #6C757D;
+  --success-color: #28A745;
+  --danger-color: #DC3545;
+  --warning-color: #FFC107;
+  --info-color: #17A2B8;
+  --dark-color: #1F2937;
+  --text-color: #f3f4f6;
+  --text-color-light: #d1d5db;
+  --background-color: #F3F4F6;
+  --background-color-dark: #111827;
+  --transition-speed: 0.3s;
 }
 
 * {
@@ -27,6 +40,10 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  @apply bg-gray-50 dark:bg-hr-dark text-gray-100 dark:text-white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-speed) ease;
 }
 
 .code-editor-container {
@@ -47,11 +64,13 @@ body {
 }
 
 .btn {
-  @apply font-semibold px-4 py-2 rounded transition-colors;
+  @apply px-4 py-2 rounded font-medium focus:outline-none 
+    focus:ring-2 focus:ring-offset-2 transition-colors;
 }
 
 .btn-primary {
-  @apply bg-hr-blue text-white hover:opacity-90;
+  @apply bg-hr-primary text-white hover:bg-hr-primary-dark 
+    focus:ring-hr-primary dark:bg-hr-primary dark:hover:bg-hr-primary-dark;
 }
 
 .btn-success {
@@ -59,28 +78,157 @@ body {
 }
 
 .btn-danger {
-  @apply bg-hr-red text-white hover:opacity-90;
+  @apply bg-red-600 text-white hover:bg-red-700 
+    focus:ring-red-500;
 }
 
 .btn-secondary {
-  @apply bg-hr-dark-accent text-white hover:opacity-90;
+  @apply bg-gray-200 text-gray-900 hover:bg-gray-300 
+    dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 
+    focus:ring-gray-500;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-accent);
-  border-radius: 4px;
+  @apply bg-gray-400 dark:bg-gray-600 rounded;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #445070;
+  @apply bg-gray-500 dark:bg-gray-500;
+}
+
+/* Accessibility Styles */
+
+/* High Contrast Mode */
+.high-contrast {
+  --primary-color: #0078d4;
+  --primary-color-dark: #005a9e;
+  --text-color: #000000;
+  --text-color-light: #444444;
+  --background-color: #ffffff;
+  --background-color-dark: #000000;
+}
+
+.high-contrast body {
+  @apply bg-white text-black;
+}
+
+.high-contrast .dark\:bg-hr-dark {
+  @apply bg-black;
+}
+
+.high-contrast .dark\:bg-hr-dark-secondary {
+  @apply bg-gray-900;
+}
+
+.high-contrast .dark\:text-gray-200 {
+  @apply text-white;
+}
+
+.high-contrast a:focus,
+.high-contrast button:focus {
+  @apply outline-4 outline-yellow-500;
+}
+
+/* Reduced Motion */
+.reduced-motion * {
+  transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* Focus Mode */
+.focus-mode .layout-container > *:not(main):not(header) {
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
+}
+
+.focus-mode .layout-container > *:not(main):not(header):hover,
+.focus-mode .layout-container > *:not(main):not(header):focus-within {
+  opacity: 1;
+}
+
+/* Skip to content */
+.skip-link {
+  @apply sr-only focus:not-sr-only fixed top-0 left-0 z-50 p-2 bg-white text-black;
+}
+
+/* Custom keyboard focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-hr-primary ring-offset-2;
+}
+
+/* Form elements with better accessibility */
+input, 
+select, 
+textarea {
+  @apply rounded border border-gray-300 dark:border-gray-700 
+    px-3 py-2 w-full focus:border-hr-primary dark:focus:border-hr-primary 
+    focus:ring-2 focus:ring-hr-primary focus:ring-opacity-50 
+    dark:bg-hr-dark-secondary dark:text-white;
+}
+
+/* Improved loading animations for reduced motion */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.reduced-motion .animate-fade-in {
+  animation: none;
+}
+
+/* Additional utility classes */
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Global text color overrides to ensure contrast with dark backgrounds */
+p, h1, h2, h3, h4, h5, h6, span, div, a, button, input, textarea, select, li {
+  @apply text-gray-100 dark:text-white;
+}
+
+a {
+  @apply text-hr-blue hover:text-blue-300;
+}
+
+.text-gray-400, .text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800 {
+  @apply text-gray-300;
+}
+
+/* Table text colors */
+table th, table td {
+  @apply text-gray-100 dark:text-white;
+}
+
+/* Form label text colors */
+label {
+  @apply text-gray-100 dark:text-white;
+}
+
+/* Ensure all modal content has proper contrast */
+.modal, .dialog {
+  @apply text-gray-100 bg-hr-dark-secondary;
 }
