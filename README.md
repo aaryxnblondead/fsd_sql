@@ -1,7 +1,7 @@
 # SQL Learning Platform
 
 A comprehensive platform for learning SQL through interactive challenges, real-time query execution, and AI-powered feedback.
-
+[![Watch the video](https://img.youtube.com/vi/29hOb1bDGg4/maxresdefault.jpg)](https://youtu.be/29hOb1bDGg4)
 ## Features
 
 - **Interactive SQL Challenges**: Practice SQL with real databases
