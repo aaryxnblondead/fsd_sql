@@ -38,8 +38,8 @@ A comprehensive platform for learning SQL through interactive challenges, real-t
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/sql-learning-platform.git
-cd sql-learning-platform
+git clone https://github.com/aaryxnblondead/fsd_sql
+cd fsd_sql
 ```
 
 ### Backend Setup
